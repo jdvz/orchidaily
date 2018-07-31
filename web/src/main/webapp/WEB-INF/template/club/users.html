@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/main">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title th:text="#{user.page}">user page</title>
+</head>
+<body>
+<div layout:fragment="content" class="table-container">
+    <table>
+        <thead>
+        <tr>
+            <th class="email name" th:text="#{user.email}"></th>
+            <th class="first-name name" th:text="#{user.first.name}"></th>
+            <th class="last-name name" th:text="#{user.last.name}"></th>
+            <th class="checkboxes" th:text="#{user.settings}"></th>
+            <th class="roles" th:text="#{user.roles}"></th>
+            <th class="actions" sec:authorize="hasRole('ROLE_ADMIN')"><a
+                    class="button" href="edit.html" th:href="@{/club/create.html}" th:text="#{edit.user.create}">create</a></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <!--/*@thymesVar id="user" type="club.orchid.domain.auth.User"*/-->
+            <td th:text="${user.email}">email</td>
+            <td th:text="${user.firstName}">first name</td>
+            <td th:text="${user.lastName}">last name</td>
+            <td><dl class="settings">
+                <dt th:text="#{user.accountNonExpired}"></dt>
+                <dd><input type="checkbox" disabled="disabled" th:checked="${user.accountNonExpired}" /></dd>
+                <dt th:text="#{user.accountNonLocked}"></dt>
+                <dd><input type="checkbox" disabled="disabled" th:checked="${user.accountNonLocked}" /></dd>
+                <dt th:text="#{user.credentialsNonExpired}"></dt>
+                <dd><input type="checkbox" disabled="disabled" th:checked="${user.credentialsNonExpired}" /></dd>
+                <dt th:text="#{user.enabled}"></dt>
+                <dd><input type="checkbox" disabled="disabled" th:checked="${user.enabled}" /></dd>
+            </dl></td>
+            <td th:text="${user.roles}">roles</td>
+            <td class="actions" sec:authorize="hasRole('ROLE_ADMIN')">
+                <a class="button" href="edit.html" th:href="@{/club/edit.html(id=${user.id})}" th:text="#{edit.user}">edit</a>
+                <form action="users.html" th:action="@{/club/delete.html(id=${user.id})}" method="post">
+                    <input type="submit" th:value="#{edit.user.delete}" value="delete" />
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

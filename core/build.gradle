@@ -1,0 +1,133 @@
+buildscript {
+    ext {
+        flywayVersion = '5.1.1'
+        mysqlVersion = '5.1.13'
+    }
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/plugins-release' }
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies {
+        classpath("mysql:mysql-connector-java:${mysqlVersion}")
+        classpath("org.flywaydb:flyway-gradle-plugin:${flywayVersion}")
+    }
+}
+
+plugins {
+    id 'java'
+    id "org.flywaydb.flyway" version "5.1.1"
+    id 'war'
+    id "io.spring.dependency-management" version "1.0.5.RELEASE"
+}
+
+group 'ru.orchidaily'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'org.flywaydb.flyway'
+apply plugin: 'war'
+apply plugin: 'io.spring.dependency-management'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.spring.io/plugins-release' }
+    flatDir {
+        dirs '../data/build/libs/'
+    }
+}
+
+configurations {
+    flywayMigration
+}
+
+// Declare your dependencies as usual for each configuration
+dependencies {
+// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    compile group: 'mysql', name: 'mysql-connector-java', version: mysqlVersion
+// https://mvnrepository.com/artifact/org.springframework/spring-jms
+    compile group: 'org.springframework', name: 'spring-jms', version: springVersion
+    compile group: 'org.springframework', name: 'spring-web', version: springVersion
+    compile group: 'org.springframework', name: 'spring-webmvc', version: springVersion
+
+    // https://mvnrepository.com/artifact/org.springframework.integration/spring-integration-amqp
+    compile group: 'org.springframework.integration', name: 'spring-integration-amqp', version: '5.0.6.RELEASE'
+    // https://mvnrepository.com/artifact/org.springframework.amqp/spring-amqp
+    compile group: 'org.springframework.amqp', name: 'spring-amqp', version: springAmqpVersion
+
+    compile group: 'org.flywaydb', name: 'flyway-core', version: flywayVersion
+
+    // https://mvnrepository.com/artifact/javax.jms/javax.jms-api
+    compile group: 'javax.jms', name: 'javax.jms-api', version: jmxVersion
+
+    compile group: 'org.springframework.data', name: 'spring-data-solr', version: springDataSolrVersion
+    
+    compile("org.apache.solr:solr-solrj:${solrVersion}") {
+        exclude group: 'org.slf4j'
+        exclude group: 'commons-logging'
+    }
+    compile("org.apache.solr:solr-core:${solrVersion}") {
+        exclude group: 'org.slf4j'
+        exclude group: 'jdk.tools'
+        exclude group: 'jackson-core'
+    }
+
+// https://mvnrepository.com/artifact/org.restlet.jee/org.restlet
+    runtimeClasspath group: 'org.restlet.jee', name: 'org.restlet', version: restletVersion
+
+    compile group: 'joda-time', name: 'joda-time', version: jodaVersion
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.5'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpmime
+    compile group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.5'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+    compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.9'
+
+    // https://mvnrepository.com/artifact/org.apache.zookeeper/zookeeper
+    compile group: 'org.apache.zookeeper', name: 'zookeeper', version: '3.4.12', ext: 'pom'
+
+    // https://mvnrepository.com/artifact/org.codehaus.woodstox/stax2-api
+    compile group: 'org.codehaus.woodstox', name: 'stax2-api', version: '4.1'
+    // https://mvnrepository.com/artifact/org.codehaus.woodstox/woodstox-core-asl
+    compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
+
+// https://mvnrepository.com/artifact/io.springfox/springfox-swagger2
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: springfoxVersion
+// https://mvnrepository.com/artifact/io.springfox/springfox-spring-web
+    compile group: 'io.springfox', name: 'springfox-spring-web', version: springfoxVersion
+    // https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: springfoxVersion
+
+// https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations
+    compile group: 'io.swagger', name: 'swagger-annotations', version: swaggerVersion
+    // https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-models
+    compile group: 'io.swagger', name: 'swagger-models', version: swaggerVersion
+
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+
+    compile group: 'ru.orchidaily', name: 'data', version: version
+
+    runtime "javax.servlet:jstl:${servletVersion}"
+// https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: servletApiVersion
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+flyway {
+    // fix it
+    url = project.ext['datasource.url']
+    user = project.ext['datasource.username']
+    password = project.ext['datasource.password']
+    driver = project.ext['datasource.driver-class-name']
+    encoding = 'utf8'
+    configurations = [ 'compile', 'flywayMigration' ]
+}
+
+war {
+    archiveName 'core.war'
+}

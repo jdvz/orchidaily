@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta name="_csrf_token" th:content="${_csrf.token}" content="csft.token" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" content="csrf.headerName"/>
+    <meta name="_csrf_param" th:content="${_csrf.parameterName}" content="csrf.paramName"/>
+    <!--<meta name="_csrf" th:content="${_csrf}" />-->
+    <link rel="stylesheet" type="text/css" media="all"
+          href="../../../resources/css/main.css" th:href="@{/resources/css/main.css}" />
+    <link rel="stylesheet" type="text/css" media="all"
+          href="../../../resources/css/edit.css" th:href="@{/resources/css/edit.css}" />
+    <script type="text/javascript" src="../../../resources/js/main.js" th:src="@{/resources/js/main.js}"></script>
+    <script type="text/javascript" src="../../../resources/js/ckeditor/ckeditor.js" th:src="@{/resources/js/ckeditor/ckeditor.js}"></script>
+    <script type="text/javascript" src="../../../resources/js/ckeditor/config.js" th:src="@{/resources/js/ckeditor/config.js}"></script>
+    <script type="text/javascript" src="../../../resources/js/editor.js" th:src="@{/resources/js/editor.js}"></script>
+    <script type="text/javascript">
+    </script>
+</head>
+<body onload="loadCkEditor();">
+<div class="container">
+    <div layout:fragment="content">
+    </div>
+    <div th:replace="fragments/footer :: footer">&copy; 2014 The Static Templates</div>
+</div>
+</body>
+</html>
